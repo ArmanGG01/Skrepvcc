@@ -34,8 +34,7 @@ with open('cards.txt', 'r') as r:
 
 
 for x in temp_cards:
-    car = getcards(x)
-    if car:
+    if car := getcards(x):
         ccs.append(car[0])
     else:
         continue
@@ -44,10 +43,10 @@ for x in temp_cards:
 async def my_event_handler(m):
     if m.reply_markup:
         text = m.reply_markup.stringify()
-        urls = getUrl(text)
-        if not urls:
+        if urls := getUrl(text):
+            text = requests.get(urls[0]).text
+        else:
             return
-        text = requests.get(urls[0]).text
     else:
         text = m.text
     cards = getcards(text)
@@ -63,7 +62,7 @@ async def my_event_handler(m):
     bin_json =  bin.json()
     binf = bin_json['bin']
     if len(ano) == 2:
-        ano = '20'+ano
+        ano = f'20{ano}'
     fullinfo = f"{cc}|{mes}|{ano}|{cvv}"
     text = f"""
 <b>CARD :</b> <code>{cc}|{mes}|{ano}|{cvv}</code>\n
@@ -76,7 +75,7 @@ async def my_event_handler(m):
 ╚═══════════════════════╝
 
 \n
-"""  
+"""
     print(f'{cc}|{mes}|{ano}|{cvv}')
     with open('cards.txt', 'a') as w:
         w.write(fullinfo + '\n')
